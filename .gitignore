@@ -4,6 +4,31 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# ===============================================
+# Secrets & Environment-Specific Configurations
+# ===============================================
+# NEVER commit your main application properties containing secrets.
+src/main/resources/application.properties
+
+# Ignore environment variable files
+.env
+
+
+# ===============================================
+# Build Artifacts & Output Directories
+# ===============================================
+# Maven build output directory
+/target/
+
+# Log files
+*.log
+logs/
+
+# Java archive files
+*.jar
+*.war
+*.ear
+
 ### STS ###
 .apt_generated
 .classpath
