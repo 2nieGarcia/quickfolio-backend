@@ -36,4 +36,5 @@ build/
 .env
 .env.*
 
-
+### Application Property ###
+src/main/resources/application.properties
