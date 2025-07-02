@@ -13,6 +13,6 @@ After that, run:
 
 mvn spring-boot:run 
 
-OR
+OR, if you don't have Maven installed, run:
 
 .\mvnw.cmd spring-boot:run
