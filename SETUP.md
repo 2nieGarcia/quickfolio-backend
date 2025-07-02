@@ -1,15 +1,6 @@
-## For backends
-# Make sure you HAVE .env file.
+# Make sure you HAVE application.properties file.
 
-In PowerShell, run this line of code:
-
-Get-Content .env | ForEach-Object {
-    if ($_ -match "^\s*([^#][^=]*)=(.*)$") {
-        [System.Environment]::SetEnvironmentVariable($matches[1].Trim(), $matches[2].Trim(), "Process")
-    }
-}
-
-After that, run:
+Once you have the file, you can run it via IntelliJ or via terminal, run:
 
 mvn spring-boot:run 
 
