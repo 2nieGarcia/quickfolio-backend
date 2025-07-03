@@ -1,6 +1,7 @@
 package com.joybreadstudios.quickfolio.controller
 
-import com.joybreadstudios.quickfolio.dto.SignUpRequest
+import com.joybreadstudios.quickfolio.dto.SignUpDTO
+import com.joybreadstudios.quickfolio.dto.response.ApiResponse
 import com.joybreadstudios.quickfolio.service.AuthService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -16,17 +17,20 @@ class AuthController(
 ) {
 
     @PostMapping("/signup")
-    fun signUp(@RequestBody request: SignUpRequest): ResponseEntity<Any> {
+    fun signUp(@RequestBody request: SignUpDTO): ResponseEntity<ApiResponse<String>> {
         return try {
             authService.registerUser(request)
-            // On success, return a simple message with a 201 Created status
-            ResponseEntity.status(HttpStatus.CREATED).body(mapOf("message" to "User registered successfully!"))
+            ResponseEntity.status(HttpStatus.CREATED).body(
+                ApiResponse(success = true, data = "User registered successfully!")
+            )
         } catch (e: IllegalArgumentException) {
-            // If the service throws an exception (e.g., username taken), return a 409 Conflict status
-            ResponseEntity.status(HttpStatus.CONFLICT).body(mapOf("error" to e.message))
+            ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ApiResponse(success = false, error = e.message)
+            )
         } catch (e: Exception) {
-            // For any other unexpected errors, return a 500 Internal Server Error
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mapOf("error" to "An unexpected error occurred."))
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                ApiResponse(success = false, error = "An unexpected error occurred.")
+            )
         }
     }
 }

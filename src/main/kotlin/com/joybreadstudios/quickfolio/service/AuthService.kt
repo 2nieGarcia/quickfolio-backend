@@ -1,7 +1,7 @@
 package com.joybreadstudios.quickfolio.service
 
 import com.joybreadstudios.quickfolio.domain.User
-import com.joybreadstudios.quickfolio.dto.SignUpRequest
+import com.joybreadstudios.quickfolio.dto.SignUpDTO
 import com.joybreadstudios.quickfolio.repository.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -13,7 +13,7 @@ class AuthService(
     private val passwordEncoder: PasswordEncoder
 ) {
 
-    fun registerUser(request: SignUpRequest) {
+    fun registerUser(request: SignUpDTO) {
         // 1. Check if username or email already exists to prevent duplicates
         if (userRepository.findByUsername(request.username) != null) {
             throw IllegalArgumentException("Username '${request.username}' is already taken.")
