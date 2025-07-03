@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 import java.util.Date
 
 @Component
-class JwtUtil (private val jwtConfig: JwtConfig){
+class JwtUtils (private val jwtConfig: JwtConfig){
     fun generateToken(username: String): String {
         return Jwts.builder()
             .setSubject(username)

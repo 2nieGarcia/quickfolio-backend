@@ -1,6 +1,7 @@
 package com.joybreadstudios.quickfolio.controller
 
 import com.joybreadstudios.quickfolio.dto.SignUpDTO
+import com.joybreadstudios.quickfolio.dto.request.LoginDTO
 import com.joybreadstudios.quickfolio.dto.response.ApiResponse
 import com.joybreadstudios.quickfolio.service.AuthService
 import org.springframework.http.HttpStatus
@@ -22,6 +23,24 @@ class AuthController(
             authService.registerUser(request)
             ResponseEntity.status(HttpStatus.CREATED).body(
                 ApiResponse(success = true, data = "User registered successfully!")
+            )
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ApiResponse(success = false, error = e.message)
+            )
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                ApiResponse(success = false, error = "An unexpected error occurred.")
+            )
+        }
+    }
+
+    @PostMapping("/login")
+    fun login(@RequestBody request: LoginDTO): ResponseEntity<ApiResponse<String>> {
+        return try {
+            val response = authService.loginUser(request)
+            ResponseEntity.status(HttpStatus.CREATED).body(
+                ApiResponse(success = true, data = response)
             )
         } catch (e: IllegalArgumentException) {
             ResponseEntity.status(HttpStatus.CONFLICT).body(
