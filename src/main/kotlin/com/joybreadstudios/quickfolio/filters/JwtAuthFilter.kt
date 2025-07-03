@@ -6,6 +6,8 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -14,10 +16,12 @@ import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
+@Order(2)
 class JwtAuthFilter(
     private val jwtUtils: JwtUtils,
     private val userDetailsService: UserDetailsService
-) : OncePerRequestFilter() {
+) : OncePerRequestFilter(), Ordered {
+    override fun getOrder(): Int = 2
 
     override fun doFilterInternal(
         request: HttpServletRequest,
