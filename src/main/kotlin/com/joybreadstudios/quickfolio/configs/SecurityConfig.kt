@@ -1,6 +1,7 @@
 package com.joybreadstudios.quickfolio.config
 
 import com.joybreadstudios.quickfolio.filters.JwtAuthFilter
+import com.joybreadstudios.quickfolio.responses.JwtAuthEntryPoint
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -15,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig (private val jwtAuthFilter: JwtAuthFilter){
+class SecurityConfig (private val jwtAuthFilter: JwtAuthFilter, private val authEntryPoint: JwtAuthEntryPoint){
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
@@ -35,6 +36,9 @@ class SecurityConfig (private val jwtAuthFilter: JwtAuthFilter){
                         "/swagger-ui/**"
                     ).permitAll()
                     .anyRequest().authenticated()
+            }
+            .exceptionHandling {
+                it.authenticationEntryPoint(authEntryPoint) // ✅ Plug it in
             }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
