@@ -1,9 +1,7 @@
 package com.joybreadstudios.quickfolio.filters
 
-import com.joybreadstudios.quickfolio.repository.UserRepository
 import com.joybreadstudios.quickfolio.utils.JwtUtils
 import jakarta.servlet.FilterChain
-import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.core.Ordered
@@ -13,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.stereotype.Component
+import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
@@ -23,11 +22,18 @@ class JwtAuthFilter(
 ) : OncePerRequestFilter(), Ordered {
     override fun getOrder(): Int = 2
 
+    private val pathMatcher = AntPathMatcher()
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
+        if (isPermitted(request)) {
+            filterChain.doFilter(request, response)
+            return
+        }
+
         val authHeader = request.getHeader("Authorization")
         val token = authHeader?.takeIf { it.startsWith("Bearer ") }?.substring(7)
 
@@ -47,5 +53,16 @@ class JwtAuthFilter(
         }
 
         filterChain.doFilter(request, response)
+    }
+
+    private fun isPermitted(request: HttpServletRequest): Boolean {
+        val publicPaths = listOf(
+            "/api/auth/**",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-ui.html",
+            "/swagger-ui/**"
+        )
+        return publicPaths.any { path -> pathMatcher.match(path, request.servletPath) }
     }
 }
